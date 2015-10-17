@@ -1,16 +1,16 @@
-0. Bot saves princess:           
-1. 3 / 0 / 0            
-2. 13.9
-0. Bot saves princess - 2:       
-1. 3 / 0 / 0            
-2. 17.5
-0. BotClean:                     
-1. 4 / 0 / 0            
-2. 17.83
-0. BotClean Stochastic:          
-1. 1 / 0 / 0            
-2. 10.0
-0. BotClean Large:               
-1. 4 / 0 / 0            
-2. 54.1
+#Bot saves princess:           
+3 / 0 / 0            
+13.9
+#Bot saves princess - 2:       
+3 / 0 / 0            
+17.5
+#BotClean:                     
+4 / 0 / 0            
+17.83
+#BotClean Stochastic:          
+1 / 0 / 0            
+10.0
+#BotClean Large:               
+4 / 0 / 0            
+54.1
 
