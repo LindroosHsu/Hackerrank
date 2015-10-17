@@ -26,6 +26,6 @@
 </tr>
   <td>BotClean Large</td>
   <td>4/0/0</td>
-  <td>54.1</td>
+  <td>54.10</td>
 </tr>
 </table>
