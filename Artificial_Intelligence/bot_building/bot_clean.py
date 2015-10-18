@@ -55,7 +55,7 @@ def next_move(bot, target, file_name):
         
         with open(file_name, 'w') as f:
             for target in new_file:
-                f.write("{0} {1}\n".format(target.get_y(), target.get_x()))
+                f.write("{0} {1}".format(target.get_y(), target.get_x()))
                 
     else:       
         if bot.get_x() > target.get_x():
