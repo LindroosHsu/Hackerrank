@@ -48,11 +48,15 @@ def next_move(bot, target, file_name):
             
             for line in f:
                 if not "{0} {1}".format(target.get_y(), target.get_x()) in line:
-                    new_file.append(line)
+                    y, x = map(int, line.split())
+                    new_file.append(Node(y, x))
+        
+        new_file = sorted(new_file, key=bot.distance)
         
         with open(file_name, 'w') as f:
-            f.writelines(new_file)
-        
+            for target in new_file:
+                f.write("{0} {1}\n".format(target.get_y(), target.get_x()))
+                
     else:       
         if bot.get_x() > target.get_x():
             print("LEFT")
