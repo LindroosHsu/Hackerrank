@@ -58,12 +58,13 @@ if __name__ == "__main__":
     pri_pos_file = "princess_position"
     
     try:
-        f = open(pri_pos_file)
-        pri_pos = Node(*map(int, f.readline().split()))
+        with open(pri_pos_file) as f:
+            pri_pos = Node(*map(int, f.readline().split()))
         
     except FileNotFoundError:
         pri_pos = finding_pri_pos(grid, m)
-        f = open(pri_pos_file, 'w')
-        f.write(str(pri_pos.get_y()) + " " + str(pri_pos.get_x()))
+        
+        with open(pri_pos_file, 'w') as f:
+            f.write(str(pri_pos.get_y()) + " " + str(pri_pos.get_x()))
         
     next_step(bot_pos, pri_pos)

@@ -2,44 +2,76 @@
 
 #!/usr/bin/python
 
-# Head ends here
-def next_move(bot_y, bot_x, board):
+#
+# borad size in this problem is static 5*5
+#
+
+class Node:
+    def __init__(self, y, x):
+        self.x = x
+        self.y = y
+    
+    def set_x(self, x):
+        self.x = x
+    
+    def set_y(self, y):
+        self.y = y
+    
+    def get_x(self):
+        return self.x
+        
+    def get_y(self):
+        return self.y
+    
+    def distance(self, other):
+        return abs(self.x - other.x) + abs(self.y - other.y)
+
+def finding_dirty_pos(board):
+    dirty_pos = list()
+    
+    for i in range(5):
+        for j in range(5):
+            if board[i][j] == 'd':
+                dirty_pos.append(Node(i, j))
+            
+    return dirty_pos
+
+def next_move(bot, target):
     
     # the bot is under the dirty position
-    if board[bot_y][bot_x] == 'd':
+    if bot.get_x() == target.get_x() and bot.get_y() == target.get_y():
         print("CLEAN")
         
-    else:
-        dirty_pos = list()
-        
-        for i in range(5):
-            for j in range(5):
-                if board[i][j] == 'd':
-                    dirty_pos.append({'x':j, 'y':i})
-                    
-        small_pos = {'x':1000, 'y':1000}
-        for pos in dirty_pos:
-            if abs(pos['x']-bot_x)+abs(pos['y']-bot_y) < \
-            abs(small_pos['x']-bot_x)+abs(small_pos['y']-bot_y):
-                small_pos['x'] = pos['x']
-                small_pos['y'] = pos['y']
-                
-        if bot_x > small_pos['x']:
+    else:       
+        if bot.get_x() > target.get_x():
             print("LEFT")
 
-        elif bot_x < small_pos['x']:
+        elif bot.get_x() < target.get_x():
             print("RIGHT")
 
-        elif bot_y > small_pos['y']:
+        elif bot.get_y() > target.get_y():
             print("UP")
 
-        elif bot_y < small_pos['y']:
+        else:
             print("DOWN")
                     
                     
-# Tail starts here
 if __name__ == "__main__":
-    pos = list(map(int, input().split()))
+    bot = Node(*map(int, input().split()))
     board = list(list(input()) for _ in range(5))
-    next_move(pos[0], pos[1], board)
+    dirty_pos_file = "dirty_positions"
+    
+    try:
+        with open(dirty_pos_file) as f:
+            target = Node(*map(int, f.readline().split()))
+        
+    except FileNotFoundError:
+        dirty_pos = sorted(finding_dirty_pos(board), key=bot.distance)
+        target = dirty_pos[0]
+        
+        with open(dirty_pos_file, 'w') as f:
+            for target in dirty_pos:
+                f.write(str(target.get_y()) + " " + str(target.get_x()) + "\n")
+        
+    next_move(bot, target)
 
