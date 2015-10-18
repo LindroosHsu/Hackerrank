@@ -36,11 +36,22 @@ def finding_dirty_pos(board):
             
     return dirty_pos
 
-def next_move(bot, target):
+def next_move(bot, target, file_name):
     
     # the bot is under the dirty position
     if bot.get_x() == target.get_x() and bot.get_y() == target.get_y():
         print("CLEAN")
+        
+        # since we cleaned the dirty, remove it from file
+        with open(file_name) as f:
+            new_file = list()
+            
+            for line in f:
+                if not "{0} {1}".format(target.get_y(), target.get_x()) in line:
+                    new_file.append(line)
+        
+        with open(file_name, 'w') as f:
+            f.writelines(new_file)
         
     else:       
         if bot.get_x() > target.get_x():
@@ -67,11 +78,12 @@ if __name__ == "__main__":
         
     except FileNotFoundError:
         dirty_pos = sorted(finding_dirty_pos(board), key=bot.distance)
-        target = dirty_pos[0]
         
         with open(dirty_pos_file, 'w') as f:
             for target in dirty_pos:
-                f.write(str(target.get_y()) + " " + str(target.get_x()) + "\n")
-        
-    next_move(bot, target)
+                f.write("{0} {1}\n".format(target.get_y(), target.get_x()))
+                
+        target = dirty_pos[0]
+    
+    next_move(bot, target, dirty_pos_file)
 
