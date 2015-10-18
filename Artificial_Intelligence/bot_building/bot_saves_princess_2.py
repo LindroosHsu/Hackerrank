@@ -2,32 +2,68 @@
 
 #!/usr/bin/python
 
-m = int(input())
-pri_pos = {'x':0, 'y':0}
-bot_pos = {'x':0, 'y':0}
+class Node:
+    def __init__(self, y, x):
+        self.x = x
+        self.y = y
+    
+    def set_x(self, x):
+        self.x = x
+    
+    def set_y(self, y):
+        self.y = y
+    
+    def get_x(self):
+        return self.x
+        
+    def get_y(self):
+        return self.y
+    
+    def distance(self, other):
+        return abs(self.x - other.x) + abs(self.y - other.y)
 
-bot_pos['y'], bot_pos['x'] = map(int, input().split())
-grid = list(list(input().strip()) for _ in range(m))
+def finding_pri_pos(grid, grid_size):
+    pri_pos = Node(0, 0)
+    
+    for i in range(grid_size):
+        try:
+            j = grid[i].index('p')
+            pri_pos.set_x(j)
+            pri_pos.set_y(i)
+            break
+            
+        except ValueError:
+            pass
+            
+    return pri_pos
 
-#finding princess position
-for i in range(m):
+def next_step(bot_pos, pri_pos):
+    if bot_pos.get_x() > pri_pos.get_x():
+        print("LEFT")
+
+    elif bot_pos.get_x() < pri_pos.get_x():
+        print("RIGHT")
+
+    elif bot_pos.get_y() > pri_pos.get_y():
+        print("UP")
+
+    else:
+        print("DOWN")
+
+
+if __name__ == "__main__":
+    m = int(input())
+    bot_pos = Node(*map(int, input().split()))
+    grid = list(list(input().strip()) for _ in range(m))
+    pri_pos_file = "princess_position"
+    
     try:
-        j = grid[i].index('p')
-        pri_pos['x'] = j
-        pri_pos['y'] = i
-        break
+        f = open(pri_pos_file)
+        pri_pos = Node(*map(int, f.readline().split()))
         
-    except ValueError:
-        pass
-
-if bot_pos['x'] > pri_pos['x']:
-    print("LEFT")
-         
-elif bot_pos['x'] < pri_pos['x']:
-    print("RIGHT")
+    except FileNotFoundError:
+        pri_pos = finding_pri_pos(grid, m)
+        f = open(pri_pos_file, 'w')
+        f.write(str(pri_pos.get_y()) + " " + str(pri_pos.get_x()))
         
-elif bot_pos['y'] > pri_pos['y']:
-    print("UP")
-        
-elif bot_pos['y'] < pri_pos['y']:
-    print("DOWN")
+    next_step(bot_pos, pri_pos)
