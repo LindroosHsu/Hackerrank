@@ -23,14 +23,10 @@ class Node:
         
 
 def finding_dirty_pos(board, h, w):
-    dirty_pos = list()
-    
     for i in range(h):
         for j in range(w):
             if board[i][j] == 'd':
-                dirty_pos.append(Node(i, j))
-            
-    return dirty_pos
+                yield(Node(i, j))
 
 def next_move(bot, target, file_name):
     
