@@ -1,24 +1,26 @@
 #https://www.hackerrank.com/challenges/botcleanlarge
 
+from itertools import permutations
+
 class Node:
     def __init__(self, y, x):
         self.x = x
         self.y = y
     
-    def set_x(self, x):
-        self.x = x
-    
-    def set_y(self, y):
-        self.y = y
-    
-    def get_x(self):
-        return self.x
-        
-    def get_y(self):
-        return self.y
-    
     def distance(self, other):
         return abs(self.x - other.x) + abs(self.y - other.y)
+        
+    def calculate_total_distance(self, dirty_poses):
+        emu_bot = Node(self.y, self.x)
+        total_distance = 0
+        
+        for dirty in dirty_poses:
+            total_distance += emu_bot.distance(dirty)
+            emu_bot.x = dirty.x
+            emu_bot.y = dirty.y
+            
+        return total_distance
+        
 
 def finding_dirty_pos(board, h, w):
     dirty_pos = list()
@@ -33,7 +35,7 @@ def finding_dirty_pos(board, h, w):
 def next_move(bot, target, file_name):
     
     # the bot is under the dirty position
-    if bot.get_x() == target.get_x() and bot.get_y() == target.get_y():
+    if bot.x == target.x and bot.y == target.y:
         print("CLEAN")
         
         # since we cleaned the dirty, remove it from file
@@ -41,58 +43,30 @@ def next_move(bot, target, file_name):
             new_file = list()
             
             for line in f:
-                if not "{0} {1}".format(target.get_y(), target.get_x()) in line:
+                if not "{0} {1}".format(target.y, target.x) in line:
                     new_file.append(line)
         
+        # because I want to overwrite the original file,
+        # so read file first then write file after.
         with open(file_name, 'w') as f:
             f.writelines(new_file)
                 
-                
     else:       
-        if bot.get_x() > target.get_x():
+        if bot.x > target.x:
             print("LEFT")
 
-        elif bot.get_x() < target.get_x():
+        elif bot.x < target.x:
             print("RIGHT")
 
-        elif bot.get_y() > target.get_y():
+        elif bot.y > target.y:
             print("UP")
 
         else:
             print("DOWN")
-
-def backtrack(n, limit):
-    global small_steps
-    global target_pos
-    global solution
     
-    if n == limit:
-        emu_bot_x = bot_x
-        emu_bot_y = bot_y
-        steps = 0
-        
-        for dirty in solution:
-            steps += abs(emu_bot_x-dirty['x']) + abs(emu_bot_y-dirty['y'])
-            emu_bot_x = dirty['x']
-            emu_bot_y = dirty['y']
-        
-        if steps < small_steps:
-            small_steps = steps
-            target_pos['x'] = dirty_pos[0]['x']
-            target_pos['y'] = dirty_pos[0]['y']
-        
-        return;
+def calculate_shorted_path_case(bot, dirty_poses):
+    return sorted(permutations(dirty_poses), key=bot.calculate_total_distance)[0]
     
-    for i in range(limit):
-        if not used[i]:
-            used[i] = True
-            
-            solution[n]['x'] = dirty_pos[n]['x']
-            solution[n]['y'] = dirty_pos[n]['y']
-            backtrack(n+1, limit)
-            
-            used[i] = False
-
 
 if __name__ == "__main__":
     bot = Node(*map(int, input().split()))
@@ -105,20 +79,15 @@ if __name__ == "__main__":
             target = Node(*map(int, f.readline().split()))
         
     except FileNotFoundError:
-        dirty_pos = finding_dirty_pos(board, h, w)
+        dirty_poses = finding_dirty_pos(board, h, w)
         
         # calculate best step logic
-        len_dirty = len(dirty_pos)
-        used = [False] * len_dirty
-        small_steps = 10000
-        solution = [{'x':0, 'y':0}] * len_dirty
-        
-        backtrack(0, len_dirty)
+        dirty_poses = calculate_shorted_path_case(bot, dirty_poses)
         
         with open(dirty_pos_file, 'w') as f:
-            for target in dirty_pos:
-                f.write("{0} {1}\n".format(target.get_y(), target.get_x()))
+            for target in dirty_poses:
+                f.write("{0} {1}\n".format(target.y, target.x))
                 
-        target = dirty_pos[0]
+        target = dirty_poses[0]
     
     next_move(bot, target, dirty_pos_file)
