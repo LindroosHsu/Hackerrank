@@ -9,18 +9,6 @@ class Node:
     
     def distance(self, other):
         return abs(self.x - other.x) + abs(self.y - other.y)
-        
-    def calculate_total_distance(self, dirty_poses):
-        emu_bot = Node(self.y, self.x)
-        total_distance = 0
-        
-        for dirty in dirty_poses:
-            total_distance += emu_bot.distance(dirty)
-            emu_bot.x = dirty.x
-            emu_bot.y = dirty.y
-            
-        return total_distance
-        
 
 def finding_dirty_pos(board, h, w):
     for i in range(h):
@@ -28,6 +16,20 @@ def finding_dirty_pos(board, h, w):
             if board[i][j] == 'd':
                 yield(Node(i, j))
 
+def calculate_total_distance(bot, dirties, shorted_path):
+    emu_bot = Node(bot.y, bot.x)
+    total_distance = 0
+        
+    for dirty in dirties:
+        if total_distance >= shorted_path:
+            break
+            
+        total_distance += emu_bot.distance(dirty)
+        emu_bot.x = dirty.x
+        emu_bot.y = dirty.y
+            
+    return total_distance
+                
 def next_move(bot, target, file_name):
     
     # the bot is under the dirty position
@@ -60,9 +62,6 @@ def next_move(bot, target, file_name):
         else:
             print("DOWN")
     
-def calculate_shorted_path_case(bot, dirty_poses):
-    return sorted(permutations(dirty_poses), key=bot.calculate_total_distance)[0]
-    
 
 if __name__ == "__main__":
     bot = Node(*map(int, input().split()))
@@ -78,12 +77,20 @@ if __name__ == "__main__":
         dirty_poses = finding_dirty_pos(board, h, w)
         
         # calculate best step logic
-        dirty_poses = calculate_shorted_path_case(bot, dirty_poses)
+        shorted_path = h * w
+        target_dirties = None
+        
+        for dirties in permutations(dirty_poses):
+            tmp = calculate_total_distance(bot, dirties, shorted_path)
+            
+            if tmp < shorted_path:
+                shorted_path = tmp
+                target_dirties = dirties
         
         with open(dirty_pos_file, 'w') as f:
-            for target in dirty_poses:
+            for target in target_dirties:
                 f.write("{0} {1}\n".format(target.y, target.x))
                 
-        target = dirty_poses[0]
+        target = target_dirties[0]
     
     next_move(bot, target, dirty_pos_file)
