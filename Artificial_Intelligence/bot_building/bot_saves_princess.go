@@ -21,7 +21,7 @@ func NewPosition() *Position {
 	return &Position{x:Border, y:Border}
 }
 
-func findBotAndPri(bot, pri *Position) {
+func findBotAndPri(bot, pri *Position, botCh, priCh chan int) {
 	var N int
 	fmt.Scanf("%d", &N)
 
@@ -31,10 +31,14 @@ func findBotAndPri(bot, pri *Position) {
 			fmt.Scanf("%c", &input)
 
 			if input == 'p' {
-				pri.SetXY(j, i)
+				priCh <- j
+                priCh <- i
+                close(priCh)
 
 			} else if input == 'm' {
-				bot.SetXY(j, i)
+                botCh <- j
+                botCh <- i
+                close(botCh)
 			}
 		}
 	}
@@ -62,10 +66,16 @@ func printNextStep(bot, pri *Position) {
 }
 
 func main() {
-	var bot = *NewPosition()
-	var pri = *NewPosition()
+	bot := *NewPosition()
+	pri := *NewPosition()
+    botCh := make(chan int, 2)
+    priCh := make(chan int, 2)
 
-	findBotAndPri(&bot, &pri)
+    // trying not to read all grid,
+    // when found princess and bot location then jump into printNextStep
+	go findBotAndPri(&bot, &pri, botCh, priCh)
+    bot.SetXY(<-botCh, <-botCh)
+    pri.SetXY(<-priCh, <-priCh)
 
 	printNextStep(&bot, &pri)
 }
