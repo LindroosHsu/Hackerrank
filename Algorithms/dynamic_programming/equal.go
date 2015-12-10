@@ -2,6 +2,10 @@ package main
 
 import (
     "fmt"
+    "bufio"
+    "os"
+    "strconv"
+    "strings"
 )
 
 const (
@@ -11,24 +15,27 @@ const (
 )
 
 func main() {
-    var T int
-    fmt.Scanf("%d\n", &T)
+    scanner := bufio.NewScanner(os.Stdin)
+    scanner.Scan()
+    T, _ := strconv.Atoi(scanner.Text())
 
     for t := 0; t < T; t++ {
-        var N int
-        fmt.Scanf("%d", &N)
+        scanner.Scan()
+        N, _ := strconv.Atoi(scanner.Text())
 
-        chocols := make([]int, N)
+        scanner.Scan()
+        line := strings.Split(scanner.Text(), " ")
+
+        var chocols []int
         minChocol := maxChocol
-        for i := 0; i < N; i++ {
-            var inChocol int
-            fmt.Scanf("%d", &inChocol)
+        for _, v := range line {
+            inChocol, _ := strconv.Atoi(v)
 
             if minChocol > inChocol {
                 minChocol = inChocol
             }
 
-            chocols[i] = inChocol
+            chocols = append(chocols, inChocol)
         }
 
         answer := maxInt
