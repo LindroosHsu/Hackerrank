@@ -17,6 +17,7 @@
 
 //************************************************
 // TEST CASE 6 ~ 13 will get wrong answer...
+// ok... I give it up temporary... at lease I passed by using Python...
 //************************************************
 
 package main
@@ -30,7 +31,7 @@ import (
 )
 
 const (
-    mod int64 = int64(1e9) + 7
+    mod uint64 = uint64(1e9) + 7
 )
 
 func main() {
@@ -44,15 +45,14 @@ func main() {
         scanner.Scan()
         line := strings.Split(scanner.Text(), " ")
 
-        xorSum, _ := strconv.ParseInt(line[0], 10, 64)
-        var pwr int64 = 1
+        xorSum, _ := strconv.ParseUint(line[0], 10, 64)
+        var pwr uint64 = 1
         for i := 1; i < len(line); i++ {
-            v, _ := strconv.ParseInt(line[i], 10, 64)
+            v, _ := strconv.ParseUint(line[i], 10, 64)
             xorSum = (xorSum | v) % mod
             pwr = (pwr << 1) % mod
         }
-        fmt.Println("xorSum: ", xorSum)
-        fmt.Println("pwr: ", pwr)
-        fmt.Println("answer is :",(xorSum * pwr) % mod)
+        xorSum = (xorSum * pwr) % mod
+        fmt.Println(xorSum)
     }
 }
