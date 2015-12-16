@@ -40,16 +40,19 @@ func main() {
 
     for t := 0; t < T; t++ {
         scanner.Scan()
-        N, _ := strconv.ParseUint(scanner.Text(), 10, 64)
+        //N, _ := strconv.ParseUint(scanner.Text(), 10, 64)
         scanner.Scan()
         line := strings.Split(scanner.Text(), " ")
 
-        var xorSum int64
-        for _, s := range line {
-            v, _ := strconv.ParseInt(s, 10, 64)
-            xorSum |= v
+        xorSum, _ := strconv.ParseInt(line[0], 10, 64)
+        var pwr int64 = 1
+        for i := 1; i < len(line); i++ {
+            v, _ := strconv.ParseInt(line[i], 10, 64)
+            xorSum = (xorSum | v) % mod
+            pwr = (pwr << 1) % mod
         }
-        pwr := int64(1 << (N-1))
-        fmt.Println((xorSum * pwr) % mod)
+        fmt.Println("xorSum: ", xorSum)
+        fmt.Println("pwr: ", pwr)
+        fmt.Println("answer is :",(xorSum * pwr) % mod)
     }
 }
