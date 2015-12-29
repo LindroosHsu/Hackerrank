@@ -25,34 +25,30 @@ package main
 import (
     "fmt"
     "bufio"
-    "strings"
     "strconv"
     "os"
 )
 
 const (
-    mod uint64 = uint64(1e9) + 7
+    mod int = 1e9 + 7
 )
 
 func main() {
     scanner := bufio.NewScanner(os.Stdin)
+    scanner.Split(bufio.ScanWords)
     scanner.Scan()
     T, _ := strconv.Atoi(scanner.Text())
 
-    for t := 0; t < T; t++ {
-        scanner.Scan()
-        //N, _ := strconv.ParseUint(scanner.Text(), 10, 64)
-        scanner.Scan()
-        line := strings.Split(scanner.Text(), " ")
+    for t := 0; t < T && scanner.Scan(); t++ {
+        N, _ := strconv.Atoi(scanner.Text())
 
-        xorSum, _ := strconv.ParseUint(line[0], 10, 64)
-        var pwr uint64 = 1
-        for i := 1; i < len(line); i++ {
-            v, _ := strconv.ParseUint(line[i], 10, 64)
-            xorSum = (xorSum | v) % mod
-            pwr = (pwr << 1) % mod
+        xorSum := 0
+        for i := 0; i < N && scanner.Scan(); i++ {
+            n, _ := strconv.Atoi(scanner.Text())
+            xorSum |= n
         }
-        xorSum = (xorSum * pwr) % mod
-        fmt.Println(xorSum)
+
+        pwr := 1 << uint(N - 1)
+        fmt.Println(pwr * xorSum % mod)
     }
 }
